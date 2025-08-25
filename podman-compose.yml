@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  hive-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hive-frontend
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - hive-network
+
+networks:
+  hive-network:
+    driver: bridge

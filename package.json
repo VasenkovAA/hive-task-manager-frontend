@@ -5,11 +5,24 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "docker:build": "docker build -t hive-frontend .",
+    "docker:run": "docker run -p 80:80 --name hive-frontend-container hive-frontend",
+    "docker:compose": "docker-compose up -d",
+    "docker:compose-down": "docker-compose down",
+    "docker:compose-build": "docker-compose up -d --build",
+    "podman:build": "podman build --pull-always --format docker -t hive-frontend .",
+    "podman:run": "podman run --replace -p 8080:8080 --name hive-frontend-container hive-frontend",
+    "podman:stop": "podman stop hive-frontend-container || true",
+    "podman:remove": "podman rm hive-frontend-container || true",
+    "podman:restart": "npm run podman:stop && npm run podman:remove && npm run podman:run",
+    "podman:clean": "podman rmi hive-frontend",
+    "podman:logs": "podman logs hive-frontend-container"
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
