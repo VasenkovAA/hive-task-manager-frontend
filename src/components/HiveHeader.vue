@@ -54,7 +54,7 @@
 
 <script>
 export default {
-  name: 'AppHeader',
+  name: 'HiveHeader',
   data() {
     return {
       menuActive: false

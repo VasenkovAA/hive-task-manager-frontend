@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: 'AppHome'
+  name: 'HiveHome'
 }
 </script>
 

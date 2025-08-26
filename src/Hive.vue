@@ -1,22 +1,23 @@
 <template>
-  <div id="app">
-    <AppHeader />
+  <div id="Hive">
+    <HiveHeader />
     <main>
       <router-view />
     </main>
-    <AppFooter />
+    <HiveFooter />
   </div>
 </template>
 
 <script>
-import AppHeader from './components/AppHeader.vue'
-import AppFooter from './components/AppFooter.vue'
+import HiveHeader from './components/HiveHeader.vue'
+import HiveFooter from './components/HiveFooter.vue'
 
 export default {
-  name: 'App',
+  // eslint-disable-next-line
+  name: 'Hive',
   components: {
-    AppHeader,
-    AppFooter
+    HiveHeader,
+    HiveFooter
   }
 }
 </script>
@@ -45,7 +46,7 @@ body {
   padding: 0 20px;
 }
 
-#app {
+#Hive {
   display: flex;
   flex-direction: column;
   min-height: 100vh;

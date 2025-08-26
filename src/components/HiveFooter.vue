@@ -76,7 +76,7 @@
 
 <script>
 export default {
-  name: 'AppFooter'
+  name: 'HiveFooter'
 }
 </script>
 
