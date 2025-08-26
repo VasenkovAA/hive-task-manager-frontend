@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/HiveHome.vue'
 import About from '@/views/HiveAbout.vue'
 import Register from '@/views/HiveRegister.vue'
+import Login from '@/views/HiveLogin.vue'
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/register',
     name: 'HiveRegister',
     component: Register
+  },
+  {
+    path: '/login',
+    name: 'HiveLogin',
+    component: Login
   }
 ]
 

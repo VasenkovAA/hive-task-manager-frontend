@@ -1,103 +1,93 @@
 <template>
-  <div class="modal-overlay" @click.self="$emit('close')">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-logo">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16 2L20 6L16 10L12 6L16 2Z" fill="#FDDB44"/>
-            <path d="M22 8L26 12L22 16L18 12L22 8Z" fill="#FDDB44"/>
-            <path d="M22 16L26 20L22 24L18 20L22 16Z" fill="#FDDB44"/>
-            <path d="M16 22L20 26L16 30L12 26L16 22Z" fill="#FDDB44"/>
-            <path d="M10 16L14 20L10 24L6 20L10 16Z" fill="#FDDB44"/>
-            <path d="M10 8L14 12L10 16L6 12L10 8Z" fill="#FDDB44"/>
-          </svg>
-          <span class="modal-logo-text">Hive</span>
+  <Teleport to="body">
+    <div class="modal-overlay" @click.self="$emit('close')">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-logo">
+            <HiveIcon />
+            <span class="modal-logo-text">Hive</span>
+          </div>
+          <button class="close-button" @click="$emit('close')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
-        <button class="close-button" @click="$emit('close')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
-      
-      <div class="modal-body">
-        <h2 class="modal-title">Вход в аккаунт</h2>
         
-        <form class="auth-form" @submit.prevent="handleLogin">
-          <div class="form-group">
-            <label for="email" class="form-label">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              v-model="email" 
-              placeholder="Ваш email" 
-              class="form-input"
-              required
-            >
-          </div>
+        <div class="modal-body">
+          <h2 class="modal-title">Вход в аккаунт</h2>
           
-          <div class="form-group">
-            <label for="password" class="form-label">Пароль</label>
-            <input 
-              type="password" 
-              id="password" 
-              v-model="password" 
-              placeholder="Ваш пароль" 
-              class="form-input"
+          <form class="auth-form" @submit.prevent="handleLogin">
+            <HiveInput
+              id="email"
+              type="email"
+              label="Email"
+              placeholder="Ваш email"
+              v-model="email"
+              :error="error"
               required
-            >
-          </div>
+            />
+            
+            <HiveInput
+              id="password"
+              type="password"
+              label="Пароль"
+              placeholder="Ваш пароль"
+              v-model="password"
+              required
+            />
+            
+            <HiveButton type="submit" :loading="loading" fullWidth>
+              Войти
+            </HiveButton>
+          </form>
           
-          <button type="submit" class="auth-submit-btn">Войти</button>
-        </form>
-        
-     
-        
-        <div class="auth-footer">
-          <p>Нет аккаунта? <router-link to="/register" class="auth-link" @click="$emit('close')">Зарегистрироваться</router-link></p>
+          <div class="auth-footer">
+            <p>Нет аккаунта? <router-link to="/register" class="auth-link" @click="$emit('close')">Зарегистрироваться</router-link></p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script>
-import { authAPI } from '@/config'
+import { ref } from 'vue'
+import { useAuth } from '@/composables/useAuth'
+import HiveIcon from '@/components/HiveIcon.vue'
+import HiveInput from '@/components/HiveInput.vue'
+import HiveButton from '@/components/HiveButton.vue'
 
 export default {
   name: 'HiveLoginModal',
-  data() {
-    return {
-      email: '',
-      password: ''
-    }
+  components: {
+    HiveIcon,
+    HiveInput,
+    HiveButton
   },
-  methods: {
-    async handleLogin() {
+  emits: ['close'],
+  setup(props, { emit }) {
+    const email = ref('')
+    const password = ref('')
+    
+    const { loading, error, login } = useAuth()
+    
+    const handleLogin = async () => {
       try {
-        // Используем endpoint из конфига
-        const response = await fetch(`${authAPI.url}${authAPI.endpoints.login}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: this.email,
-            password: this.password
-          })
-        })
-        
-        if (response.ok) {
-          // Обработка успешного входа
-          this.$emit('close')
-        } else {
-          // Обработка ошибок
-          console.error('Ошибка авторизации')
-        }
-      } catch (error) {
-        console.error('Ошибка сети:', error)
+        await login(email.value, password.value)
+        emit('close')
+      } catch (err) {
+        // Ошибка уже установлена в useAuth
       }
+    }
+    
+    return {
+      email,
+      password,
+      loading,
+      error,
+      handleLogin
     }
   }
 }
@@ -119,7 +109,7 @@ export default {
 }
 
 .modal-content {
-  background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+  background: var(--hive-gradient);
   border-radius: 12px;
   width: 100%;
   max-width: 400px;
@@ -181,92 +171,13 @@ export default {
   margin-bottom: 1.5rem;
 }
 
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-label {
-  display: block;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 1rem;
-  transition: all 0.3s;
-}
-
-.form-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #fdbb2d;
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 3px rgba(253, 187, 45, 0.2);
-}
-
-.auth-submit-btn {
-  width: 100%;
-  background-color: #fdbb2d;
-  color: #1a2a6c;
-  border: none;
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.auth-submit-btn:hover {
-  background-color: #ffcc44;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.auth-divider {
-  position: relative;
-  text-align: center;
-  margin: 1.5rem 0;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.auth-divider::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.2);
-  z-index: 1;
-}
-
-.auth-divider span {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 0 1rem;
-  position: relative;
-  z-index: 2;
-}
-
 .auth-footer {
   text-align: center;
   color: rgba(255, 255, 255, 0.8);
 }
 
 .auth-link {
-  color: #fffebaff;
+  color: #fffeba;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s;

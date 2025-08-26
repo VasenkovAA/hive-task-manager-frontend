@@ -1,10 +1,10 @@
 <template>
-  <div class="register-page">
-    <div class="register-container">
-      <div class="register-header">
-        <div class="register-logo">
+  <div class="login-page">
+    <div class="login-container">
+      <div class="login-header">
+        <div class="login-logo">
           <HiveIcon />
-          <span class="register-logo-text">Hive</span>
+          <span class="login-logo-text">Hive</span>
         </div>
         <router-link to="/" class="back-link">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -14,19 +14,10 @@
         </router-link>
       </div>
       
-      <div class="register-body">
-        <h2 class="register-title">Создание аккаунта</h2>
+      <div class="login-body">
+        <h2 class="login-title">Вход в аккаунт</h2>
         
-        <form class="auth-form" @submit.prevent="handleRegister">
-          <HiveInput
-            id="name"
-            type="text"
-            label="Имя"
-            placeholder="Ваше имя"
-            v-model="name"
-            required
-          />
-          
+        <form class="auth-form" @submit.prevent="handleLogin">
           <HiveInput
             id="email"
             type="email"
@@ -41,28 +32,18 @@
             id="password"
             type="password"
             label="Пароль"
-            placeholder="Придумайте пароль"
+            placeholder="Ваш пароль"
             v-model="password"
             required
           />
           
-          <HiveInput
-            id="confirmPassword"
-            type="password"
-            label="Подтверждение пароля"
-            placeholder="Повторите пароль"
-            v-model="confirmPassword"
-            :error="error"
-            required
-          />
-          
           <HiveButton type="submit" :loading="loading" fullWidth>
-            Зарегистрироваться
+            Войти
           </HiveButton>
         </form>
         
         <div class="auth-footer">
-          <p>Уже есть аккаунт? <router-link to="/login" class="auth-link">Войти</router-link></p>
+          <p>Нет аккаунта? <router-link to="/register" class="auth-link">Зарегистрироваться</router-link></p>
         </div>
       </div>
     </div>
@@ -71,45 +52,29 @@
 
 <script>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { useRouter } from 'vue-router'
 import HiveIcon from '@/components/HiveIcon.vue'
 import HiveInput from '@/components/HiveInput.vue'
 import HiveButton from '@/components/HiveButton.vue'
 
 export default {
-  name: 'HiveRegister',
+  name: 'HiveLogin',
   components: {
     HiveIcon,
     HiveInput,
     HiveButton
   },
   setup() {
-    const name = ref('')
     const email = ref('')
     const password = ref('')
-    const confirmPassword = ref('')
     const router = useRouter()
     
-    const { loading, error, register } = useAuth()
+    const { loading, error, login } = useAuth()
     
-    const handleRegister = async () => {
-      if (password.value !== confirmPassword.value) {
-        error.value = 'Пароли не совпадают'
-        return
-      }
-      
-      if (password.value.length < 6) {
-        error.value = 'Пароль должен содержать не менее 6 символов'
-        return
-      }
-      
+    const handleLogin = async () => {
       try {
-        await register({
-          name: name.value,
-          email: email.value,
-          password: password.value
-        })
+        await login(email.value, password.value)
         router.push('/dashboard')
       } catch (err) {
         // Ошибка уже установлена в useAuth
@@ -117,20 +82,18 @@ export default {
     }
     
     return {
-      name,
       email,
       password,
-      confirmPassword,
       loading,
       error,
-      handleRegister
+      handleLogin
     }
   }
 }
 </script>
 
 <style scoped>
-.register-page {
+.login-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
   display: flex;
@@ -139,7 +102,7 @@ export default {
   padding: 1rem;
 }
 
-.register-container {
+.login-container {
   background: white;
   border-radius: 12px;
   width: 100%;
@@ -148,7 +111,7 @@ export default {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.register-header {
+.login-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -157,14 +120,14 @@ export default {
   color: white;
 }
 
-.register-logo {
+.login-logo {
   display: flex;
   align-items: center;
   font-weight: 700;
   font-size: 1.25rem;
 }
 
-.register-logo-text {
+.login-logo-text {
   margin-left: 0.5rem;
 }
 
@@ -187,11 +150,11 @@ export default {
   margin-right: 0.5rem;
 }
 
-.register-body {
+.login-body {
   padding: 2rem;
 }
 
-.register-title {
+.login-title {
   color: var(--hive-dark);
   text-align: center;
   margin-bottom: 1.5rem;
@@ -224,15 +187,15 @@ export default {
 
 /* Адаптивность */
 @media (max-width: 480px) {
-  .register-container {
+  .login-container {
     max-width: 100%;
   }
   
-  .register-header {
+  .login-header {
     padding: 1.25rem 1.25rem 0.75rem;
   }
   
-  .register-body {
+  .login-body {
     padding: 1.5rem;
   }
   

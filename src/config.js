@@ -1,4 +1,3 @@
-// config.js
 const config = {
   development: {
     apiUrl: 'http://localhost:3000/api',
@@ -26,10 +25,5 @@ const config = {
 const env = process.env.NODE_ENV || 'development'
 export default config[env]
 
-export const authAPI = {
-  url: 'http://localhost:8000/api',
-  endpoints: {
-    login: '/auth/login/',
-    register: '/auth/register/' // Добавляем endpoint для регистрации
-  }
-}
+// Для обратной совместимости оставляем именованный экспорт
+export const authAPI = config[env].authAPI

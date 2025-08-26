@@ -4,7 +4,7 @@
       <div class="container">
         <h1>Hive: Превратите хаос задач в идеальный порядок</h1>
         <p>Умный планировщик для вашей продуктивности</p>
-        <button class="cta-button">Начать бесплатно</button>
+        <router-link to="/register" class="cta-button">Начать бесплатно</router-link>
       </div>
     </section>
     
@@ -30,18 +30,19 @@ export default {
 .hero h1 {
   font-size: 2.5rem;
   margin-bottom: 20px;
-  color: #1a2a6c;
+  color: var(--hive-dark);
 }
 
 .hero p {
   font-size: 1.2rem;
   margin-bottom: 30px;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .cta-button {
-  background-color: #fdbb2d;
-  color: #1a2a6c;
+  display: inline-block;
+  background-color: var(--hive-primary);
+  color: var(--hive-dark);
   border: none;
   padding: 15px 30px;
   border-radius: 50px;
@@ -50,10 +51,11 @@ export default {
   transition: all 0.3s;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   font-size: 1.1rem;
+  text-decoration: none;
 }
 
 .cta-button:hover {
-  background-color: #ffcc44;
+  background-color: var(--hive-primary-hover);
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }

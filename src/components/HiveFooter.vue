@@ -5,16 +5,7 @@
         <!-- Колонка с логотипом и описанием -->
         <div class="footer-column">
           <div class="footer-logo">
-            <div class="logo-icon">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16 2L20 6L16 10L12 6L16 2Z" fill="#FDDB44"/>
-                <path d="M22 8L26 12L22 16L18 12L22 8Z" fill="#FDDB44"/>
-                <path d="M22 16L26 20L22 24L18 20L22 16Z" fill="#FDDB44"/>
-                <path d="M16 22L20 26L16 30L12 26L16 22Z" fill="#FDDB44"/>
-                <path d="M10 16L14 20L10 24L6 20L10 16Z" fill="#FDDB44"/>
-                <path d="M10 8L14 12L10 16L6 12L10 8Z" fill="#FDDB44"/>
-              </svg>
-            </div>
+            <HiveIcon />
             <span class="logo-text">Hive</span>
           </div>
           <p class="footer-description">
@@ -75,14 +66,19 @@
 </template>
 
 <script>
+import HiveIcon from '@/components/HiveIcon.vue'
+
 export default {
-  name: 'HiveFooter'
+  name: 'HiveFooter',
+  components: {
+    HiveIcon
+  }
 }
 </script>
 
 <style scoped>
 .footer {
-  background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+  background: var(--hive-gradient);
   color: white;
   padding: 3rem 0 1rem;
   margin-top: auto;
@@ -103,10 +99,6 @@ export default {
   .footer-column:first-child {
     grid-column: auto;
   }
-  
-  .footer-content {
-    grid-template-columns: 2fr 1fr 1fr 1fr; /* Исправлено с 5 на 4 колонки */
-  }
 }
 
 .footer-logo {
@@ -115,16 +107,10 @@ export default {
   margin-bottom: 1rem;
 }
 
-.footer-logo .logo-icon {
-  margin-right: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .footer-logo .logo-text {
   font-size: 1.5rem;
   font-weight: 700;
+  margin-left: 0.75rem;
 }
 
 .footer-description {
@@ -134,7 +120,6 @@ export default {
   max-width: 300px;
 }
 
-/* Стили для ссылки на GitHub - ВЫНЕСЕНЫ ИЗ МЕДИАЗАПРОСА */
 .github-link {
   margin-top: 1.5rem;
 }
@@ -160,7 +145,7 @@ export default {
   margin-right: 0.5rem;
   width: 20px;
   height: 20px;
-  color: rgba(255, 255, 255, 0.8); /* Убираем синий цвет, делаем как у текста */
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .footer-title {
@@ -177,7 +162,7 @@ export default {
   left: 0;
   width: 30px;
   height: 2px;
-  background-color: #fdbb2d;
+  background-color: var(--hive-primary);
 }
 
 .footer-links {
@@ -249,5 +234,4 @@ export default {
     font-size: 0.9rem;
   }
 }
-
 </style>
