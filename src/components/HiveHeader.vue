@@ -37,8 +37,8 @@
 
         <!-- Кнопки действий -->
         <div class="header-actions">
-          <button class="login-btn">Войти</button>
-          <button class="cta-button">Начать бесплатно</button>
+          <button class="login-btn" @click="openHiveLoginModal">Войти</button>
+          <router-link to="/register" class="cta-button">Начать бесплатно</router-link>
         </div>
 
         <!-- Кнопка мобильного меню -->
@@ -49,15 +49,25 @@
         </button>
       </div>
     </div>
+
+    <!-- Модальное окно авторизации -->
+    <HiveLoginModal v-if="showHiveLoginModal" @close="showHiveLoginModal = false" />
   </header>
 </template>
 
 <script>
+import HiveLoginModal from '@/components/HiveLoginModal.vue'
+import { authAPI } from '@/config'
+
 export default {
   name: 'HiveHeader',
+  components: {
+    HiveLoginModal
+  },
   data() {
     return {
-      menuActive: false
+      menuActive: false,
+      showHiveLoginModal: false
     }
   },
   methods: {
@@ -66,12 +76,25 @@ export default {
     },
     closeMenu() {
       this.menuActive = false;
+    },
+    openHiveLoginModal() {
+      // Можно добавить дополнительную логику перед открытием
+      this.showHiveLoginModal = true;
+      
+      // Пример использования конфига
+      console.log('API URL:', authAPI.url)
     }
   }
 }
 </script>
 
 <style scoped>
+.cta-button {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
+
 .header {
   background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
   padding: 1rem 0;
