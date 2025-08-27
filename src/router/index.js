@@ -1,17 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/AppHome.vue'
-import About from '@/views/AppAbout.vue'
+import Home from '@/views/HiveHome.vue'
+import About from '@/views/HiveAbout.vue'
+import Register from '@/views/HiveRegister.vue'
+import Login from '@/views/HiveLogin.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'AppHome',
+    name: 'HiveHome',
     component: Home
   },
   {
     path: '/about',
-    name: 'AppAbout',
+    name: 'HiveAbout',
     component: About
+  },
+  {
+    path: '/register',
+    name: 'HiveRegister',
+    component: Register
+  },
+  {
+    path: '/login',
+    name: 'HiveLogin',
+    component: Login
   }
 ]
 

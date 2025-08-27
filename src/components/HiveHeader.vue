@@ -4,16 +4,7 @@
       <div class="header-content">
         <!-- Логотип -->
         <router-link to="/" class="logo">
-          <div class="logo-icon">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 2L20 6L16 10L12 6L16 2Z" fill="#FDDB44"/>
-              <path d="M22 8L26 12L22 16L18 12L22 8Z" fill="#FDDB44"/>
-              <path d="M22 16L26 20L22 24L18 20L22 16Z" fill="#FDDB44"/>
-              <path d="M16 22L20 26L16 30L12 26L16 22Z" fill="#FDDB44"/>
-              <path d="M10 16L14 20L10 24L6 20L10 16Z" fill="#FDDB44"/>
-              <path d="M10 8L14 12L10 16L6 12L10 8Z" fill="#FDDB44"/>
-            </svg>
-          </div>
+          <HiveIcon />
           <span class="logo-text">Hive</span>
         </router-link>
 
@@ -37,8 +28,8 @@
 
         <!-- Кнопки действий -->
         <div class="header-actions">
-          <button class="login-btn">Войти</button>
-          <button class="cta-button">Начать бесплатно</button>
+          <button class="login-btn" @click="openHiveLoginModal">Войти</button>
+          <router-link to="/register" class="cta-button">Начать бесплатно</router-link>
         </div>
 
         <!-- Кнопка мобильного меню -->
@@ -49,15 +40,28 @@
         </button>
       </div>
     </div>
+
+    <!-- Модальное окно авторизации с Teleport -->
+    <Teleport to="body">
+      <HiveLoginModal v-if="showHiveLoginModal" @close="showHiveLoginModal = false" />
+    </Teleport>
   </header>
 </template>
 
 <script>
+import HiveLoginModal from '@/components/HiveLoginModal.vue'
+import HiveIcon from '@/components/HiveIcon.vue'
+
 export default {
-  name: 'AppHeader',
+  name: 'HiveHeader',
+  components: {
+    HiveLoginModal,
+    HiveIcon
+  },
   data() {
     return {
-      menuActive: false
+      menuActive: false,
+      showHiveLoginModal: false
     }
   },
   methods: {
@@ -66,6 +70,9 @@ export default {
     },
     closeMenu() {
       this.menuActive = false;
+    },
+    openHiveLoginModal() {
+      this.showHiveLoginModal = true;
     }
   }
 }
@@ -73,7 +80,7 @@ export default {
 
 <style scoped>
 .header {
-  background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+  background: var(--hive-gradient);
   padding: 1rem 0;
   position: sticky;
   top: 0;
@@ -146,7 +153,7 @@ export default {
   left: 0;
   width: 0;
   height: 2px;
-  background-color: #fdbb2d;
+  background-color: var(--hive-primary);
   transition: width 0.3s;
 }
 
@@ -178,8 +185,8 @@ export default {
 }
 
 .cta-button {
-  background-color: #fdbb2d;
-  color: #1a2a6c;
+  background-color: var(--hive-primary);
+  color: var(--hive-dark);
   border: none;
   padding: 0.5rem 1.5rem;
   border-radius: 50px;
@@ -187,10 +194,12 @@ export default {
   cursor: pointer;
   transition: all 0.3s;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  text-decoration: none;
 }
 
 .cta-button:hover {
-  background-color: #ffcc44;
+  background-color: var(--hive-primary-hover);
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
@@ -235,7 +244,7 @@ export default {
     top: 70px;
     left: 0;
     width: 100%;
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+    background: var(--hive-gradient);
     flex-direction: column;
     padding: 2rem;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
