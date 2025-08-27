@@ -1,5 +1,13 @@
 <template>
   <div class="register-page">
+    <!-- Локальное уведомление об ошибке -->
+    <HiveAlert 
+      v-if="localError" 
+      :message="localError" 
+      type="error" 
+      dismissible 
+    />
+    
     <div class="register-container">
       <div class="register-header">
         <div class="register-logo">
@@ -73,34 +81,41 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { useNotifications } from '@/composables/useNotifications'
 import HiveIcon from '@/components/HiveIcon.vue'
 import HiveInput from '@/components/HiveInput.vue'
 import HiveButton from '@/components/HiveButton.vue'
+import HiveAlert from '@/components/HiveAlert.vue'
 
 export default {
   name: 'HiveRegister',
   components: {
     HiveIcon,
     HiveInput,
-    HiveButton
+    HiveButton,
+    HiveAlert
   },
   setup() {
     const name = ref('')
     const email = ref('')
     const password = ref('')
     const confirmPassword = ref('')
+    const localError = ref('')
     const router = useRouter()
     
     const { loading, error, register } = useAuth()
+    const { addNotification } = useNotifications()
     
     const handleRegister = async () => {
+      localError.value = ''
+      
       if (password.value !== confirmPassword.value) {
-        error.value = 'Пароли не совпадают'
+        localError.value = 'Пароли не совпадают'
         return
       }
       
       if (password.value.length < 6) {
-        error.value = 'Пароль должен содержать не менее 6 символов'
+        localError.value = 'Пароль должен содержать не менее 6 символов'
         return
       }
       
@@ -110,9 +125,18 @@ export default {
           email: email.value,
           password: password.value
         })
-        router.push('/dashboard')
+        
+        // Показываем успешное уведомление
+        addNotification('Регистрация прошла успешно! Теперь вы можете войти в систему.', 'success')
+        
+        // Перенаправляем на страницу входа
+        router.push('/login?registered=true')
       } catch (err) {
-        // Ошибка уже установлена в useAuth
+        // Показываем ошибку в глобальных уведомлениях
+        addNotification(err.message || 'Ошибка при регистрации')
+        
+        // Также показываем ошибку локально
+        localError.value = err.message || 'Ошибка при регистрации'
       }
     }
     
@@ -123,6 +147,7 @@ export default {
       confirmPassword,
       loading,
       error,
+      localError,
       handleRegister
     }
   }

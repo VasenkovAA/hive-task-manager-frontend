@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { apiService } from '@/services/api'
 import { authAPI } from '@/config'
 
 export function useAuth() {
@@ -7,37 +8,26 @@ export function useAuth() {
   const error = ref('')
   const router = useRouter()
 
-  const handleAuth = async (url, data) => { // Убрали successMessage
+  const handleAuth = async (endpoint, data, successRedirect = '/dashboard') => {
     loading.value = true
     error.value = ''
     
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Произошла ошибка')
-      }
-
-      const responseData = await response.json()
+      const responseData = await apiService.post(endpoint, data)
       
-      // Сохраняем токен (пример)
+      // Сохраняем токен
       if (responseData.token) {
         localStorage.setItem('authToken', responseData.token)
       }
       
       // Перенаправляем пользователя
-      await router.push('/dashboard')
+      if (successRedirect) {
+        await router.push(successRedirect)
+      }
       
       return responseData
     } catch (err) {
-      error.value = err.message
+      error.value = err.message || 'Произошла ошибка'
       console.error('Auth error:', err)
       throw err
     } finally {
@@ -46,22 +36,21 @@ export function useAuth() {
   }
 
   const login = (email, password) => {
-    return handleAuth(
-      `${authAPI.url}${authAPI.endpoints.login}`,
-      { email, password }
-    )
+    return handleAuth(authAPI.endpoints.login, { email, password })
   }
 
   const register = (userData) => {
-    return handleAuth(
-      `${authAPI.url}${authAPI.endpoints.register}`,
-      userData
-    )
+    return handleAuth(authAPI.endpoints.register, userData, '/login?registered=true')
   }
 
   const logout = () => {
     localStorage.removeItem('authToken')
     router.push('/')
+  }
+
+  // Проверяем, авторизован ли пользователь
+  const isAuthenticated = () => {
+    return !!localStorage.getItem('authToken')
   }
 
   return {
@@ -70,5 +59,6 @@ export function useAuth() {
     login,
     register,
     logout,
+    isAuthenticated
   }
 }
